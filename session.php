@@ -1,6 +1,6 @@
 <?php
+	session_start();
    include "dbconnection.php";
-   session_start();
    
    $user_check = $_SESSION['login_user'];
    
