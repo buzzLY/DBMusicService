@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 <?php
 session_start();
 ?>
+=======
+>>>>>>> 565903a2b5d32bc1b056b386e5603ec044a548b9
 <doctype! html>
 <html>
 <head>
@@ -13,7 +16,7 @@ session_start();
 	include "session.php";
 	$servername = "localhost";
 	$username = "root";
-	$password = "sareen";
+	$password = "";
 
 
 	function insertRating($rate, $uname, $trackID) {
@@ -172,10 +175,10 @@ session_start();
 
 ?>
 	<?php
-
 	#$name = $_POST['cus_name'];
 	#$keyword = "Eminem";
 	$keyword = $_POST['key'];
+
 	#$name = htmlspecialchars($name);
 	#$keyword = htmlspecialchars($keyword);
 	#$_SESSION['user_name'] = $name;
@@ -185,6 +188,7 @@ session_start();
 		showAlbums($keyword);
 		#showPlaylists($keyword);
 	}
+	
 	$uname = $_SESSION['login_user'];
 	$track = 10;
 	$rate = 5;
