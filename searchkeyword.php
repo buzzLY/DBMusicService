@@ -1,5 +1,3 @@
-
-<doctype! html>
 <html>
 <head>
 	<title> Results </title>
@@ -22,8 +20,9 @@
     	
     	}
 
-    	function insRate(rate, id) {
-    		$.post('insertRating.php', {'rate':rate, 'id':id});
+    	function insRate(dropDownId, trackId) {
+    		var selectedValue = $("#".concat(dropDownId)).val();
+    		$.post('insertRating.php', {'rate':selectedValue, 'id':trackId});
     		alert("Thank you for your rating!");
     	}
 
@@ -33,17 +32,14 @@
 
     	}
 
-    	function openPlay(id) {
-    		$.redirect('playList.php', {'id':id});
+    	function openPlaylist(trackId) {
+    		$.redirect('playList.php', {'id':trackId});
     	}
 
-    	function playLists(id, str) {
-    		if (str == 1) {
-    			$.redirect('createPlaylist.php', {'id':id})
-    		}
-    		else {
-    			$.redirect('selectPlaylist.php', {'id':id})
-    		}
+    	function playLists(id) {
+    		
+    		$.redirect('selectPlaylist.php', {'id':id})
+    		
     	}
 
 
@@ -108,7 +104,7 @@
 		" where ttitle like '%{$keyword}%' or tgenre like '%{$keyword}%' or aname like '%{$keyword}%'";
 		$stmt = $mysqli->prepare($statement);
 		$stmt->execute();
-		$stmt->bind_result($id, $title, $duration, $genre, $name);
+		$stmt->bind_result($trackId, $title, $duration, $genre, $name);
 		$valid = $stmt->fetch();
 
 		$uname = $_SESSION['login_user'];
@@ -118,6 +114,7 @@
 			echo "No Results Found";
 		}
 		echo "<table border=\"1\">";
+		$i = 0;
 		while( $valid ) {
 			$minutes = floor($duration/60);
 			$seconds = $duration%60;
@@ -125,10 +122,10 @@
 		   	echo "<td>";
 	    	echo $title . "<br>" . $name . "<br>" . $minutes . "m " . $seconds . "s<br>";
 
-		   	echo "<button onclick=\"insPlay({$id})\">Play</button><br>";
-
+		   	echo "<button onclick=\"insPlay({$trackId})\">Play</button><br>";
+		   	
 	    	echo " 
-	    	<select id='formRate' name='formRate'> 
+	    	<select id='formRate$i' name='formRate'> 
 	    		<option value=''>Rate Track</option>
 	    		<option value='1'>1 STAR</option>
 	    		<option value='2'>2 STARS</option>
@@ -137,38 +134,13 @@
 	    		<option value='5'>5 STARS</option>
 	    	</select>
 	    	";
-		   	echo "<button onclick=\"insRate(5, {$id})\">Submit Rating</button><br>";
+	    	
 
-
-
- /*
-		   	$sttemp = "SELECT ptitle FROM PlaylistInfo WHERE username = " . $temp . "";
-		   	$stm = $mysqli->prepare($sttemp);
-		   	$stm->execute();
-		   	$stm->bind_result($pnames);
-		   	$val = $stm->fetch();
-
-		  
-		   	echo " <select id='playForm' name='playForm'> ";
-		   	echo "<option value=''>Add to Playlist</option>";
-		   	echo "echo <option value='1'>Create New PlayList</option>";
-		   	$t = 1;
-		   	while ($val) {
-		   		echo "<option value='" . t ."'>" . $pnames . "</option>"; 
-		   		$t++;
-		   	}
-	    			
-	    	echo "</select>";
-	 */   	
-
-	    	echo " 
-	    	<select id='formRate' name='formRate'> 
-	    		<option value=''>Add To Playlist</option>
-	    		<option value='1'>Create New Playlist</option>
-	    		<option value='2'>Add to Existing Playist</option>
-	    	</select>
-	    	";
-	    	echo "<button onclick=\"playLists({$id},2)\">Submit</button><br>";
+	    	//echo "<p> {$rate} </p>";
+		   	echo "<button onclick=\"insRate('formRate$i', {$trackId})\">Submit Rating</button><br>";  	
+	    	echo "<button onclick=\"playLists({$trackId})\">Add To Playlist</button><br>";
+	    	$i++;
+	    	
 	 		echo "</td>";
 	    	echo "</tr>";
 
@@ -208,7 +180,7 @@
 		   	echo "<td>";
 		 	echo $name . "<br>Username: " . $usr . "<br>From: " . $city;
 
-		   	echo "<br><button onclick=\"insFollow({$usr})\">Follow User</button>";
+		   	echo "<br><button onclick=\"insFollow('$usr')\">Follow User</button>";
 	 		echo "</td>";
 	    	echo "</tr>";
 	    	$valid = $stmt->fetch();
@@ -275,7 +247,7 @@
 		while( $valid ) {
 			echo "<tr>";
 		   	echo "<td>";
-		   	echo "<button onclick=\"openPlay({$id})\">$title</button><br>";
+		   	echo "<button onclick=\"openPlaylist({$id})\">$title</button><br>";
 	    	echo "Created by: " . $uname . "<br>";
 	    	
 
