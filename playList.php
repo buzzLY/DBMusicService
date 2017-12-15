@@ -53,7 +53,15 @@
 			echo "<tr>";
 		   	echo "<td>";
 
-		   	echo $title . "<br>" . $name . "<br>" . $minutes . "m " . $seconds . "s<br>";
+		   	echo $title;
+		   	echo "</td>";
+		   	echo "<td>";
+		   	echo $name;
+		   	echo "</td>";
+		   	echo "<td>";
+		   	echo $minutes . "m " . $seconds . "s";
+		   	echo "</td>";
+		   	echo "<td>";
 			echo "<button onclick=\"insPlay({$id})\"><u>Play</u></button>";
 
 		   	echo "</tr>";

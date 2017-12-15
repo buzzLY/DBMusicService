@@ -4,7 +4,27 @@
 	<h1> Top Search Results </h1>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.rawgit.com/mgalante/jquery.redirect/master/jquery.redirect.js"></script>
+    <style>
+    	table {
+    border-collapse: collapse;
+    width: 75%;
+}
 
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+body {
+            font-family:Arial, Helvetica, sans-serif;
+            font-size:14px;
+         }
+         label {
+            font-weight:bold;
+            width:100px;
+            font-size:14px;
+         }
+    </style>
     <script>
     	function redir(id) {
     		$.redirect('albumList.php', {'id':id});
@@ -74,15 +94,17 @@
 		$stmt->bind_result($id, $name, $desc);
 		$valid = $stmt->fetch();
 
-		echo "<p><b> Artists: </b></p>";
+		echo "<h2><b> Artists: </b></h2>";
 		if (!$valid) {
 			echo "No Results Found";
 		}
 		echo "<table border=\"1\">";
+		//echo "<div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\"><b>Artist Name</b></div>";
+		echo "<tr><td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Artist Name</b></div> </td></tr>";
 		while( $valid ) {
 			echo "<tr>";
 		   	echo "<td>";
-		   	echo "<button onclick=\"redirArt({$id})\"><u>{$name}</u></button>";
+		   	echo "<button onclick=\"redirArt({$id})\" align=\"center\"><u>{$name}</u></button>";
 	    	echo "</td>";
 	    	echo "</tr>";
 		   	$valid = $stmt->fetch();
@@ -109,21 +131,38 @@
 
 		$uname = $_SESSION['login_user'];
 		$temp = $uname;
-		echo "<p><b> Tracks: </b></p>";
+		echo "<h2><b> Tracks: </b></h2>";
 		if (!$valid) {
 			echo "No Results Found";
 		}
 		echo "<table border=\"1\">";
+		echo "<tr><td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Track Name</b></div> </td>";
+		echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Artist Name</b></div> </td>";
+		echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Duration</b></div> </td>";
+		echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Play</b></div> </td>";
+		echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Rate</b></div> </td>";
+		echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Add to Playlist</b></div> </td></tr>";
+
 		$i = 0;
 		while( $valid ) {
 			$minutes = floor($duration/60);
 			$seconds = $duration%60;
 	    	echo "<tr>";
 		   	echo "<td>";
-	    	echo $title . "<br>" . $name . "<br>" . $minutes . "m " . $seconds . "s<br>";
+	    	echo $title;
+	    	echo "</td>";
+	    	echo "<td>";
+	    	echo $name;
+	    	echo "</td>";
+	    	echo "<td>";
+	    	echo $minutes . "m " . $seconds . "s";
+	    	echo "</td>";
+	    	echo "<td>";
 
 		   	echo "<button onclick=\"insPlay({$trackId})\">Play</button><br>";
-		   	
+		   	echo "</td>";
+		   	echo "<td>";
+
 	    	echo " 
 	    	<select id='formRate$i' name='formRate'> 
 	    		<option value=''>Rate Track</option>
@@ -135,13 +174,15 @@
 	    	</select>
 	    	";
 	    	
-
 	    	//echo "<p> {$rate} </p>";
-		   	echo "<button onclick=\"insRate('formRate$i', {$trackId})\">Submit Rating</button><br>";  	
+		   	echo "<br><button onclick=\"insRate('formRate$i', {$trackId})\">Submit Rating</button><br>";  	
+		   	echo "</td>";
+		   	echo "<td>";
+
 	    	echo "<button onclick=\"playLists({$trackId})\">Add To Playlist</button><br>";
 	    	$i++;
-	    	
-	 		echo "</td>";
+	    	echo "</td>";
+
 	    	echo "</tr>";
 
 
@@ -170,16 +211,28 @@
 		$valid = $stmt->fetch();
 
 
-		echo "<p><b> Users: </b></p>";
+		echo "<h2><b> Users: </b></h2>";
 		if (!$valid) {
 			echo "No Results Found";
 		}
 		echo "<table border=\"1\">";
+		echo "<tr><td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Name</b></div> </td>";
+		echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Username</b></div> </td>";
+		echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>City</b></div> </td>";
+		echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Follow</b></div> </td></tr>";
+
 		while( $valid ) {
 	    	echo "<tr>";
 		   	echo "<td>";
-		 	echo $name . "<br>Username: " . $usr . "<br>From: " . $city;
-
+		 	echo $name;
+			echo "</td>";
+		   	echo "<td>";
+		 	echo  $usr;
+		 	echo "</td>";
+		   	echo "<td>";
+		   	echo $city;
+		   	echo "</td>";
+		   	echo "<td>";
 		   	echo "<br><button onclick=\"insFollow('$usr')\">Follow User</button>";
 	 		echo "</td>";
 	    	echo "</tr>";
@@ -206,15 +259,21 @@
 		$stmt->bind_result($id, $title, $name);
 		$valid = $stmt->fetch();
 
-		echo "<p><b> Albums: </b></p>";
+		echo "<h2><b> Albums: </b></h2>";
 		if (!$valid) {
 			echo "No Results Found";
 		}
 		echo "<table border=\"1\">";
+		echo "<tr><td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Album Name</b></div> </td>";
+		echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Artist</b></div> </td></tr>";
+
 		while( $valid ) {
 	    	echo "<tr>";
 		   	echo "<td>";
-		   	echo "<button onclick=\"redir({$id})\"><u>{$title}</u></button><br>{$name}";
+		   	echo "<button onclick=\"redir({$id})\"><u>{$title}</u></button>";
+		    echo "</td>";
+		   	echo "<td>";
+		   	echo "{$name}";
 	 		echo "</td>";
 	    	echo "</tr>";
 	    	$valid = $stmt->fetch();
@@ -232,7 +291,7 @@
 			die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
 		}
 
-		echo "<p><b> Playlists: </b></p>";
+		echo "<h2><b> Playlists: </b></h2>";
 		$statement = "select pid, ptitle, username from PlaylistInfo" .
 		" where ptitle like '%{$keyword}%'";
 		$stmt = $mysqli->prepare($statement);
@@ -244,11 +303,16 @@
 			echo "No Results Found";
 		}
 		echo "<table border=\"1\">";
+		echo "<tr><td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Playlist Name</b></div> </td>";
+		echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Created By User</b></div> </td></tr>";
+
 		while( $valid ) {
 			echo "<tr>";
 		   	echo "<td>";
-		   	echo "<button onclick=\"openPlaylist({$id})\">$title</button><br>";
-	    	echo "Created by: " . $uname . "<br>";
+		   	echo "<button onclick=\"openPlaylist({$id})\">$title</button>";
+		   	echo "</td>";
+		   	echo "<td>";
+	    	echo $uname . "<br>";
 	    	
 
 	    	echo "</td>";

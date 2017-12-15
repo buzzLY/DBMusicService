@@ -1,3 +1,5 @@
+<html>
+<head></head>
 <?php
 	$servername = "localhost";
 	$username = "root";
@@ -10,13 +12,30 @@
 			die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
 		}
 
-		$stmt = $mysqli->prepare("INSERT INTO PlaylistInfo (pid, ptitle, pdate, username) VALUES (?, ?, CURRENT_TIMESTAMP,?)");
-		$stmt->bind_param("sss", $pid, $pname, $uname);
+		$position = "SELECT pid from PlaylistInfo Order by pid desc limit 1";
+		$st = $mysqli->prepare($position);
+		$st->execute();
+		$st->bind_result($poss);
+		$valid = $st->fetch();
+		$st->close();
+		$poss++;
+
+		$stmt = $mysqli->prepare("INSERT INTO PlaylistInfo (pid, ptitle, pdate, username) VALUES (?, ?, CURRENT_TIMESTAMP, ?)");
+		$stmt->bind_param('iss', $poss, $pname, $uname);
 		$stmt->execute();
 		$valid = $stmt->fetch();
 		$stmt->close();
 
-		$stmt = $mysqli->prepare("INSERT INTO Playlist ")
+		
+
+		
+
+		$sql = "INSERT INTO Playlist (pid, trackID, position) VALUES (?, ?, 1)";
+		$stmt = $mysqli->prepare($sql);
+		$stmt->bind_param('ii', $poss, $trackId);
+		$stmt->execute();
+		$valid = $stmt->fetch();
+		$stmt->close();
 		$mysqli->close();
 	}
 ?>
@@ -30,3 +49,6 @@
 	create($pname, $trackId, $name);
 
 ?>
+<body>
+</body>
+</html>

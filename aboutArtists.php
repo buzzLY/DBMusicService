@@ -57,7 +57,16 @@
 			echo "<tr>";
 		   	echo "<td>";
 
-		   	echo $title . "<br>" . $name . "<br>" . $minutes . "m " . $seconds . "s<br>";
+		   	echo $title;
+		   	echo "</td>";
+		   	echo "<td>";
+		   	echo $name;
+		   	echo "</td>";
+		   	echo "<td>";
+		   	echo $minutes . "m " . $seconds . "s";
+		   	echo "</td>";
+		   	echo "<td>";
+
 			echo "<button onclick=\"insPlay({$id})\"><u>Play</u></button><br>";
 
 		   	echo "</tr>";
@@ -83,7 +92,10 @@
 		while( $valid ) {
 	    	echo "<tr>";
 		   	echo "<td>";
-		   	echo "<button onclick=\"redir({$id})\"><u>{$title}</u></button><br>{$name}";
+		   	echo "<button onclick=\"redir({$id})\"><u>{$title}</u></button>";
+		   	echo "</td>";
+		   	echo "<td>";
+		   	echo $name;
 	 		echo "</td>";
 	    	echo "</tr>";
 	    	$valid = $stmt->fetch();

@@ -10,16 +10,14 @@
 
     <script>
     	function insert(pid,trackId) {
-    		alert(pid);
-    		alert(trackId);
     		$.post('insertPlaylist.php', {'pid':pid, 'trackId':trackId});
     		alert("Track Added to Playlist");
     	}
 
     	function createNew(trackId) {
     		var pname = $("#inputName").val();
-    		$.post('createPlaylist.php',{'trackId':trackId, 'pname':pname});
-    		alert("New Playlist Creted");
+    		$.post('createPlaylist.php', {'trackId':trackId, 'pname':pname});
+    		alert("New Playlist Created");
     	}
     </script>
 

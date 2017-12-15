@@ -6,11 +6,11 @@
 			die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
 		}
    	$loggedInUser = $_SESSION['login_user'];
-   	$statement = "SELECT distinct ttitle from Plays natural join Track WHERE username = '{$loggedInUser}';";
+   	$statement = "SELECT distinct trackID, ttitle from Plays natural join Track WHERE username = '{$loggedInUser}';";
    	
 	$stmt = $mysqli->prepare($statement);
 	$stmt->execute();
-	$stmt->bind_result($name);
+	$stmt->bind_result($id, $name);
 	$valid = $stmt->fetch();
 	echo "<p><b> Recently Played: </b></p>";
    	if(!$valid){
@@ -22,6 +22,9 @@
    			echo "<tr>";
 		   	echo "<td>";
 	    	echo $name . "<br>";
+        echo "</td>";
+        echo "<td>";
+        echo "<button onclick=\"insPlay({$id})\">Play</button><br>";
 	    	echo "</td>";
 	    	echo "</tr>";
 		   	$valid = $stmt->fetch();
@@ -37,6 +40,8 @@
    	if (mysqli_connect_errno()) {
 			die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
 		}
+
+
    	$statement = "SELECT trackID, ttitle, count(*) from Plays natural join Track group by trackID,ttitle order by count(*) desc limit 3";
    	$stmt = $mysqli->prepare($statement);
 	$stmt->execute();
@@ -52,6 +57,9 @@
    			echo "<tr>";
 		   	echo "<td>";
 	    	echo $title . "<br>";
+        echo "</td>";
+        echo "<td>";
+        echo "<button onclick=\"insPlay({$id})\">Play</button><br>";
 	    	echo "</td>";
 	    	echo "</tr>";
 		   	$valid = $stmt->fetch();
@@ -69,6 +77,11 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
       <script src="https://cdn.rawgit.com/mgalante/jquery.redirect/master/jquery.redirect.js"></script>
       <script>
+      function insPlay(id) {
+        $.post('insertPlay.php', {'id':id});
+        alert("Playing!");
+      
+      }
       function search(){
       	var key = $("#searchbar").val()
       	if((typeof key != "undefined") /*&& (key.valueOf() == "string")*/ && key.length > 0){
