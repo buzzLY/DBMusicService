@@ -68,6 +68,10 @@
 			die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
 		}
 
+		echo "<form action=\"welcome.php\" method=\"post\">";
+	    echo "<input type=\"submit\" class=\"button\" value=\"Home\">";
+	    echo "</form>";
+
 		$statement = "select aid, aname, adesc from Artist where aname like '%{$keyword}%' or adesc like '%{$keyword}%'";
 		$stmt = $mysqli->prepare($statement);
 		$stmt->execute();
@@ -99,6 +103,7 @@
 			die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
 		}
 
+		
 		$statement = "select distinct(trackID), ttitle, tduration, tgenre, aname from Track natural join Artist" .
 		" where ttitle like '%{$keyword}%' or tgenre like '%{$keyword}%' or aname like '%{$keyword}%'";
 		$stmt = $mysqli->prepare($statement);
@@ -192,6 +197,7 @@
 		$stmt->bind_result($usr, $name, $city);
 		$valid = $stmt->fetch();
 
+
 		echo "<p><b> Users: </b></p>";
 		if (!$valid) {
 			echo "No Results Found";
@@ -202,7 +208,7 @@
 		   	echo "<td>";
 		 	echo $name . "<br>Username: " . $usr . "<br>From: " . $city;
 
-		   	echo "<br><button onclick=\"insFollow({$id})\">Follow User</button>";
+		   	echo "<br><button onclick=\"insFollow({$usr})\">Follow User</button>";
 	 		echo "</td>";
 	    	echo "</tr>";
 	    	$valid = $stmt->fetch();

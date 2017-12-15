@@ -89,8 +89,11 @@
 	    	$valid = $stmt->fetch();
 	    }
 
-	    echo "</table>";
+	    echo "</table><br>";
 
+		echo "<form action=\"welcome.php\" method=\"post\">";
+	    echo "<input type=\"submit\" class=\"button\" value=\"Home\">";
+	    echo "</form>";
 	    $stmt->close();
 
 		$mysqli->close();

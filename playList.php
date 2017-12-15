@@ -61,7 +61,11 @@
 	    	$valid = $st->fetch();
 
 		}
-		echo "</table>";
+		echo "</table><br>";
+
+		echo "<form action=\"welcome.php\" method=\"post\">";
+	    echo "<input type=\"submit\" class=\"button\" value=\"Home\">";
+	    echo "</form>";
 
 		$st->close();		
 		$mysqli->close();
