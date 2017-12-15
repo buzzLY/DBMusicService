@@ -6,7 +6,7 @@
 			die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
 		}
    	$loggedInUser = $_SESSION['login_user'];
-   	$statement = "SELECT distinct ttitle from plays natural join Track WHERE username = '{$loggedInUser}';";
+   	$statement = "SELECT distinct ttitle from Plays natural join Track WHERE username = '{$loggedInUser}';";
    	
 	$stmt = $mysqli->prepare($statement);
 	$stmt->execute();
@@ -37,7 +37,7 @@
    	if (mysqli_connect_errno()) {
 			die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
 		}
-   	$statement = "SELECT trackID, ttitle, count(*) from plays natural join track group by trackID,ttitle order by count(*) desc limit 3";
+   	$statement = "SELECT trackID, ttitle, count(*) from Plays natural join Track group by trackID,ttitle order by count(*) desc limit 3";
    	$stmt = $mysqli->prepare($statement);
 	$stmt->execute();
 	$stmt->bind_result($id,$title,$count);

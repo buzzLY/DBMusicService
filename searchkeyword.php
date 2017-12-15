@@ -30,7 +30,24 @@ session_start();
 		$valid = $stmt->fetch();
 		$stmt->close();
 		$mysqli->close();
+	}
 
+	function insertPlay($uname, $trackID) {
+		global $servername, $username, $password; 
+		$mysqli = new mysqli($servername, $username, $password, "dbproject"); 
+		if (mysqli_connect_errno()) {
+			die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
+		}
+
+		#Check if it is from an album or playlist
+
+		#MySQL connection
+		$stmt = $mysqli->prepare("INSERT INTO Plays (username, trackID, time, fromAlbum, fromPlayList) VALUES (?, ?, ?, ?, ?)");
+		$stmt->bind_param("sssss", $uname, $trackID, "CURRENT_TIMESTAMP", "NULL", "NULL");
+		$stmt->execute();
+		$valid = $stmt->fetch();
+		$stmt->close();
+		$mysqli->close();
 	}
 
 
@@ -41,13 +58,13 @@ session_start();
 			die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
 		}
 
-		$statement = "select aname, adesc from Artist where aname like '%{$keyword}%' or adesc like '%{$keyword}%'";
+		$statement = "select aid, aname, adesc from Artist where aname like '%{$keyword}%' or adesc like '%{$keyword}%'";
 		$stmt = $mysqli->prepare($statement);
 		$stmt->execute();
-		$stmt->bind_result($name, $desc);
+		$stmt->bind_result($id, $name, $desc);
 		$valid = $stmt->fetch();
 
-		echo "<p><b> Top Artists: </b></p>";
+		echo "<p><b> Artists: </b></p>";
 		if (!$valid) {
 			echo "No Results Found";
 		}
@@ -55,7 +72,8 @@ session_start();
 		while( $valid ) {
 			echo "<tr>";
 		   	echo "<td>";
-	    	echo $name . " - " . $desc . "<br>";
+		   	$_SESSION['aid'] = $id;
+	    	echo "<a href=\"aboutArtists.php\">" . $name . "</a>" . "<br>";
 	    	echo "</td>";
 	    	echo "</tr>";
 		   	$valid = $stmt->fetch();
@@ -79,7 +97,7 @@ session_start();
 		$stmt->bind_result($title, $duration, $genre, $name);
 		$valid = $stmt->fetch();
 
-		echo "<p><b> Top Tracks: </b></p>";
+		echo "<p><b> Tracks: </b></p>";
 		if (!$valid) {
 			echo "No Results Found";
 		}
@@ -89,9 +107,10 @@ session_start();
 			$seconds = $duration%60;
 	    	echo "<tr>";
 		   	echo "<td>";
-	    	echo $title . " - " . $name . "<br>" . $genre . " - " . $minutes . "m " . $seconds . "s";
+	    	echo $title . "<br>" . $name . "<br>" . $minutes . "m " . $seconds . "s";
 	    	
-	    	echo "<br><br><input type=\"image\" src=\"play.png\" class=\"btTxt submit\" id=\"saveForm\" alt=\"Play\" <br>";
+	    	echo "<br><br><input type=\"image\" src=\"play.png\" class=\"btTxt submit\" \
+	    	id=\"saveForm\" alt=\"Play\" <br>";
 
 	    	echo " <p>
 	    	<select rate='formRate'> 
@@ -103,8 +122,6 @@ session_start();
 	    		<option value='5'>5</option>
 	    	</select>
 	    	</p>";
-
-
 
 	 		echo "</td>";
 	    	echo "</tr>";
@@ -120,6 +137,7 @@ session_start();
 		$mysqli->close();
 	}
 
+	#DONE
 	function showAlbums($keyword) {
 		global $servername, $username, $password; 
 		$mysqli = new mysqli($servername, $username, $password, "dbproject"); 
@@ -127,14 +145,14 @@ session_start();
 			die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
 		}
 
-		$statement = "select albtitle, aname from Album natural join Artist" .
+		$statement = "select albid, albtitle, aname from Album natural join Artist" .
 		" where albtitle like '%{$keyword}%' or aname like '%{$keyword}%'";
 		$stmt = $mysqli->prepare($statement);
 		$stmt->execute();
-		$stmt->bind_result($title, $name);
+		$stmt->bind_result($id, $title, $name);
 		$valid = $stmt->fetch();
 
-		echo "<p><b> Top Albums: </b></p>";
+		echo "<p><b> Albums: </b></p>";
 		if (!$valid) {
 			echo "No Results Found";
 		}
@@ -142,7 +160,9 @@ session_start();
 		while( $valid ) {
 	    	echo "<tr>";
 		   	echo "<td>";
-	    	echo $title . " - " . $name . "<br>";
+		   	$_SESSION['albid'] = $id;
+	    	echo "<a href=\"albumList.php\">" . $title . "</a>" . "<br>" . $name;
+	    	#echo ;
 	 		echo "</td>";
 	    	echo "</tr>";
 	    	$valid = $stmt->fetch();
@@ -163,7 +183,7 @@ session_start();
 
 
 
-		echo "<p><b> Top Playlists: </b></p>";
+		echo "<p><b> Playlists: </b></p>";
 
 
 		$mysqli->close();
@@ -173,6 +193,7 @@ session_start();
 ?>
 	<?php
 	#$name = $_POST['cus_name'];
+
 	#$keyword = "Eminem";
 	$keyword = $_POST['key'];
 

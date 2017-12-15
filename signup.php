@@ -61,7 +61,7 @@
                   <label>Email*  :</label><input type = "text" id = "email" name = "username" class = "box"/><br /><br />
                   <input type = "submit" onclick="signUp()" value = " Submit "/><br />
                </form>
-               <div style = "font-size:11px; color:#cc0000; margin-top:10px"><?php echo $error; ?></div>
+               <div style = "font-size:11px; color:#cc0000; margin-top:10px"></div>
                
             </div>
             
