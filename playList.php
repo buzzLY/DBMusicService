@@ -1,7 +1,7 @@
 <doctype! html>
 <html>
 <head>
-	<title> Album </title>
+	<title> PlayList </title>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.rawgit.com/mgalante/jquery.redirect/master/jquery.redirect.js"></script>
@@ -31,19 +31,20 @@
 		if (mysqli_connect_errno()) {
 			die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
 		}
-		$statement = "SELECT albtitle, albid FROM Album WHERE albid = " . $id . "";
+		$statement = "SELECT ptitle, username FROM PlaylistInfo WHERE pid = " . $id . "";
 		$stmt = $mysqli->prepare($statement);
 		$stmt->execute();
-		$stmt->bind_result($title, $alid);
+		$stmt->bind_result($title, $user);
 		$valid = $stmt->fetch();
 		$stmt->close();
 		echo "<h1> {$title} Track List </h1>";
 
-		$statement = "SELECT Track.ttitle, Track.trackID, Track.tduration, Artist.aname from ((Album join TrackList on Album.albid = TrackList.albid) join Track on TrackList.trackID = Track.trackID) join Artist on Track.aid = Artist.aid where Album.albid = {$id}"; 
-		$stmt = $mysqli->prepare($statement);
-		$stmt->execute();
-		$stmt->bind_result($title, $tid, $dur, $name);
-		$valid = $stmt->fetch();
+		$ns = "SELECT Track.ttitle, Track.trackID, Track.tduration, Artist.aname from ((PlaylistInfo join Playlist on PlaylistInfo.pid = Playlist.pid) join Track on Playlist.trackID = Track.trackID) join Artist on Track.aid = Artist.aid where PlaylistInfo.pid = {$id}"; 
+
+		$st = $mysqli->prepare($ns);
+		$st->execute();
+		$st->bind_result($title, $tid, $dur, $name);
+		$valid = $st->fetch();
 
 		echo "<table border=\"1\">";
 		while($valid) {
@@ -57,12 +58,12 @@
 
 		   	echo "</tr>";
 		   	echo "</td>";
-	    	$valid = $stmt->fetch();
+	    	$valid = $st->fetch();
 
 		}
 		echo "</table>";
 
-		$stmt->close();		
+		$st->close();		
 		$mysqli->close();
 	}
 ?>
@@ -71,8 +72,8 @@
 
 <?php
 	session_start();
-	$id = $_POST['id'];
-	displayInfo($id);
+	$pid = $_POST['id'];
+	displayInfo($pid);
 
 ?>
 

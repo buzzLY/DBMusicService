@@ -2,6 +2,19 @@
 <html>
 <head>
 	<title> About Artist </title>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/mgalante/jquery.redirect/master/jquery.redirect.js"></script>
+
+    <script>
+    	function redir(id) {
+    		$.redirect('albumList.php', {'id':id});
+    	}
+    	function insPlay(id) {
+    		$.post('insertPlay.php', {'id':id});
+    		alert("Playing!");
+    	}
+    </script>
 </head>
 <body>
 
@@ -32,7 +45,11 @@
 		$stmt->bind_result($title, $tid, $dur, $gen, $name);
 		$valid = $stmt->fetch();
 
+
 		echo "<p><b> Tracks: </b></p>";
+		if (!$valid) {
+			echo "<p> No Tracks Found </p>";
+		}
 		echo "<table border=\"1\">";
 		while($valid) {
 			$minutes = floor($dur/60);
@@ -40,9 +57,9 @@
 			echo "<tr>";
 		   	echo "<td>";
 
-		   	echo $title . "<br>" . $name . "<br>" . $minutes . "m " . $seconds . "s";
-			echo "<br><br><input type=\"image\" src=\"play.png\" class=\"btTxt submit\" \
-	    	id=\"saveForm\" alt=\"Play\" onclick=insertPlay({p}, {$tid})<br>";
+		   	echo $title . "<br>" . $name . "<br>" . $minutes . "m " . $seconds . "s<br>";
+			echo "<button onclick=\"insPlay({$id})\"><u>Play</u></button><br>";
+
 		   	echo "</tr>";
 		   	echo "</td>";
 	    	$valid = $stmt->fetch();
@@ -50,7 +67,32 @@
 		}
 		echo "</table>";
 
-		$stmt->close();		
+
+		$statement = "select albid, albtitle, aname from Album natural join Artist" .
+		" where aid = " . $id . "";
+		$stmt = $mysqli->prepare($statement);
+		$stmt->execute();
+		$stmt->bind_result($id, $title, $name);
+		$valid = $stmt->fetch();
+
+		echo "<p><b> Albums: </b></p>";
+		if (!$valid) {
+			echo "No Results Found";
+		}
+		echo "<table border=\"1\">";
+		while( $valid ) {
+	    	echo "<tr>";
+		   	echo "<td>";
+		   	echo "<button onclick=\"redir({$id})\"><u>{$title}</u></button><br>{$name}";
+	 		echo "</td>";
+	    	echo "</tr>";
+	    	$valid = $stmt->fetch();
+	    }
+
+	    echo "</table>";
+
+	    $stmt->close();
+
 		$mysqli->close();
 	}
 ?>
@@ -59,7 +101,7 @@
 <?php
 	session_start();
 
-	$id = $_SESSION['aid'];
+	$id = $_POST['id'];
 	displayInfo($id);
 
 ?>

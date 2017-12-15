@@ -56,7 +56,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                   <input type = "submit" value = " Submit "/><br />
                </form>
                <button id="signup" type="button" onClick="document.location.href='signup.php'">Sign Up</button>
-               <div style = "font-size:11px; color:#cc0000; margin-top:10px"><?php echo $error; ?></div>
+               <div style = "font-size:11px; color:#cc0000; margin-top:10px</div> 
                
             </div>
             
