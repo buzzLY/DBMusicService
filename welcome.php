@@ -69,6 +69,40 @@
    	}
    	$mysqli->close();
    }
+
+   function usersIfollow(){
+      $mysqli = new mysqli(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_DATABASE); 
+    if (mysqli_connect_errno()) {
+      die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
+    }
+
+    $loggedInUser = $_SESSION['login_user'];
+    $statement = "SELECT u.uname from follows f ,user u where (u.username = f.followee) and f.username = ?";
+    $stmt = $mysqli->prepare($statement);
+    $stmt->bind_param("s",$loggedInUser);
+    $stmt->execute();
+    $stmt->bind_result($name);
+    $valid = $stmt->fetch();
+      echo "<p><b> Users You follow </b></p>";
+    if(!$valid){
+      echo "No Results Found";
+    }
+    else {
+      echo "<table border=\"1\">";
+      while($valid){
+        echo "<tr>";
+        echo "<td>";
+        echo $name . "<br>";
+        echo "</td>";
+        echo "</tr>";
+        $valid = $stmt->fetch();
+      }
+      echo "</table>";
+      $stmt->close();
+    }
+    $mysqli->close();
+
+   }
 ?>
 <html>
    
@@ -120,6 +154,7 @@ input[type=text]:focus {
       <?php
       recentSongs();
       topPlays();
+      usersIfollow();
       ?>
       
    </body>
