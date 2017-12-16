@@ -24,6 +24,21 @@ body {
             width:100px;
             font-size:14px;
          }
+         button.link {
+	-moz-user-select: text;
+	background: none;
+	border: none;
+	color: black;
+	cursor: pointer;
+	font-size: 1em;
+	margin: 0;
+	padding: 0;
+	text-align: left;
+}
+ 
+button.link:hover span {
+	text-decoration: underline;
+}
     </style>
     <script>
     	function redir(id) {
@@ -62,6 +77,11 @@ body {
     		
     	}
 
+    	function insFan(id) {
+    		$.post('insertFan.php', {'id':id});
+    		alert("You are now a fan!");
+    	}
+
 
     </script>
 
@@ -89,6 +109,7 @@ body {
 	    echo "</form>";
 
 		$statement = "select aid, aname, adesc from Artist where aname like '%{$keyword}%' or adesc like '%{$keyword}%'";
+
 		$stmt = $mysqli->prepare($statement);
 		$stmt->execute();
 		$stmt->bind_result($id, $name, $desc);
@@ -100,11 +121,15 @@ body {
 		}
 		echo "<table border=\"1\">";
 		//echo "<div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\"><b>Artist Name</b></div>";
-		echo "<tr><td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Artist Name</b></div> </td></tr>";
+		echo "<tr><td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Artist Name</b></div> </td>";
+		echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Become a Fan</b></div> </td></tr>";		
 		while( $valid ) {
 			echo "<tr>";
 		   	echo "<td>";
-		   	echo "<button onclick=\"redirArt({$id})\" align=\"center\"><u>{$name}</u></button>";
+		   	echo "<button onclick=\"redirArt({$id})\" align=\"center\" class=\"link\"><u>{$name}</u></button>";
+		   	echo "</td>";
+		   	echo "<td>";
+		   	echo "<br><button onclick=\"insFan('$id')\" align=\"center\">Become a Fan</button>";
 	    	echo "</td>";
 	    	echo "</tr>";
 		   	$valid = $stmt->fetch();
@@ -122,11 +147,11 @@ body {
 		}
 
 		
-		$statement = "select distinct(trackID), ttitle, tduration, tgenre, aname from Track natural join Artist" .
+		$statement = "select distinct(trackID), ttitle, tduration, tgenre, aname, aid from Track natural join Artist" .
 		" where ttitle like '%{$keyword}%' or tgenre like '%{$keyword}%' or aname like '%{$keyword}%'";
 		$stmt = $mysqli->prepare($statement);
 		$stmt->execute();
-		$stmt->bind_result($trackId, $title, $duration, $genre, $name);
+		$stmt->bind_result($trackId, $title, $duration, $genre, $name, $id);
 		$valid = $stmt->fetch();
 
 		$uname = $_SESSION['login_user'];
@@ -152,14 +177,14 @@ body {
 	    	echo $title;
 	    	echo "</td>";
 	    	echo "<td>";
-	    	echo $name;
+		   	echo "<button onclick=\"redirArt({$id})\" align=\"center\" class=\"link\"><u>{$name}</u></button>";
 	    	echo "</td>";
 	    	echo "<td>";
 	    	echo $minutes . "m " . $seconds . "s";
 	    	echo "</td>";
 	    	echo "<td>";
 
-		   	echo "<button onclick=\"insPlay({$trackId})\">Play</button><br>";
+		   	echo "<button onclick=\"insPlay({$trackId})\" >Play</button><br>";
 		   	echo "</td>";
 		   	echo "<td>";
 
@@ -270,10 +295,10 @@ body {
 		while( $valid ) {
 	    	echo "<tr>";
 		   	echo "<td>";
-		   	echo "<button onclick=\"redir({$id})\"><u>{$title}</u></button>";
+		   	echo "<button onclick=\"redir({$id})\" class=\"link\"><u>{$title}</u></button>";
 		    echo "</td>";
 		   	echo "<td>";
-		   	echo "{$name}";
+		   	echo "<button onclick=\"redirArt({$id})\" class=\"link\"><u>{$name}</u></button>";
 	 		echo "</td>";
 	    	echo "</tr>";
 	    	$valid = $stmt->fetch();
@@ -309,7 +334,7 @@ body {
 		while( $valid ) {
 			echo "<tr>";
 		   	echo "<td>";
-		   	echo "<button onclick=\"openPlaylist({$id})\">$title</button>";
+		   	echo "<button onclick=\"openPlaylist({$id})\" class=\"link\"><u>$title</u></button>";
 		   	echo "</td>";
 		   	echo "<td>";
 	    	echo $uname . "<br>";

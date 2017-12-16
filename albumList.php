@@ -46,6 +46,11 @@
 		$valid = $stmt->fetch();
 
 		echo "<table border=\"1\">";
+		echo "<tr><td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Track Name</b></div> </td>";
+		echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Artist</b></div> </td>";
+		echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Duration</b></div> </td>";		
+		echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Play</b></div> </td>";
+
 		while($valid) {
 			$minutes = floor($dur/60);
 			$seconds = $dur%60;

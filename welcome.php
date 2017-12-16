@@ -1,7 +1,7 @@
 <?php
    include "session.php";
    function recentSongs(){
-   	$mysqli = new mysqli(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_DATABASE); 
+   	$mysqli = new mysqli(DB_SERVER,DB_USERNAME,'',DB_DATABASE); 
    	if (mysqli_connect_errno()) {
 			die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
 		}
@@ -18,6 +18,10 @@
    	}
    	else {
    		echo "<table border=\"1\">";
+      echo "<tr><td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Track Name</b></div> </td>";
+      echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Play</b></div> </td></tr>";
+
+
    		while($valid){
    			echo "<tr>";
 		   	echo "<td>";
@@ -53,6 +57,9 @@
    	}
    	else {
    		echo "<table border=\"1\">";
+      echo "<tr><td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Track Name</b></div> </td>";
+      echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Play</b></div> </td></tr>";
+
    		while($valid){
    			echo "<tr>";
 		   	echo "<td>";
@@ -71,17 +78,17 @@
    }
 
    function usersIfollow(){
-      $mysqli = new mysqli(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_DATABASE); 
+      $mysqli = new mysqli(DB_SERVER,DB_USERNAME,'',DB_DATABASE); 
     if (mysqli_connect_errno()) {
       die("Connect to db failed: " . "<br>" . mysqli_connect_error() );
     }
 
     $loggedInUser = $_SESSION['login_user'];
-    $statement = "SELECT u.uname from follows f ,user u where (u.username = f.followee) and f.username = ?";
+    $statement = "SELECT u.uname, u.username from Follows f ,User u where (u.username = f.followee) and f.username = ?";
     $stmt = $mysqli->prepare($statement);
     $stmt->bind_param("s",$loggedInUser);
     $stmt->execute();
-    $stmt->bind_result($name);
+    $stmt->bind_result($name, $uname);
     $valid = $stmt->fetch();
       echo "<h2><b> Users You follow </b></h2>";
     if(!$valid){
@@ -89,10 +96,16 @@
     }
     else {
       echo "<table border=\"1\">";
+      echo "<tr><td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Name</b></div> </td>";
+      echo "<td> <div style = \"background-color:#333333; color:#FFFFFF; padding:3px;\" align=\"center\"><b>Username</b></div> </td></tr>";
+
       while($valid){
         echo "<tr>";
         echo "<td>";
-        echo $name . "<br>";
+        echo $name;
+        echo "</td>";
+        echo "<td>";
+        echo $uname;
         echo "</td>";
         echo "</tr>";
         $valid = $stmt->fetch();
