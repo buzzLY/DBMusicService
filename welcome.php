@@ -12,7 +12,7 @@
 	$stmt->execute();
 	$stmt->bind_result($id, $name);
 	$valid = $stmt->fetch();
-	echo "<p><b> Recently Played: </b></p>";
+	echo "<h2><b> Recently Played: </b></h2>";
    	if(!$valid){
    		echo "No Results Found";
    	}
@@ -47,7 +47,7 @@
 	$stmt->execute();
 	$stmt->bind_result($id,$title,$count);
 	$valid = $stmt->fetch();
-	echo "<p><b>  Top Most Played: </b></p>";
+	echo "<h2><b>  Top Most Played: </b></h2>";
    	if(!$valid){
    		echo "No Results Found";
    	}
@@ -83,7 +83,7 @@
     $stmt->execute();
     $stmt->bind_result($name);
     $valid = $stmt->fetch();
-      echo "<p><b> Users You follow </b></p>";
+      echo "<h2><b> Users You follow </b></h2>";
     if(!$valid){
       echo "No Results Found";
     }
